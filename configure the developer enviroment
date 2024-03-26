@@ -16,3 +16,12 @@ aws iam get-policy-version --policy-arn $policyArn --version-id v1
 
 //Attach the S3-Delete-Bucket-Policy policy to the notes-application-role role using the correct command
 aws iam attach-role-policy --policy-arn $policyArn --role-name notes-application-role
+
+// To verify the policy was added, run the following IAM command:
+aws iam list-attached-role-policies --role-name notes-application-role
+
+
+// Now that the notes-application-role has the permissions to delete the bucket with 
+deleteme
+ in the name, run the command below:
+aws s3 rb s3://$bucketToDelete

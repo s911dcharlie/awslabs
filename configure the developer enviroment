@@ -1,0 +1,18 @@
+// From a command interface, run the following command to list the Amazon S3 buckets
+aws s3 ls
+
+//Run the following command to create a variable named bucketToDelete to use to specify the bucket name in future commands.
+bucketToDelete=$(aws s3api list-buckets --output text --query 'Buckets[?contains(Name, `deletemebucket`) == `true`] | [0].Name')
+
+//command that will delete the bucket with deleteme in the name for 
+aws s3 rb s3://$bucketToDelete
+
+//Run the command below to assign the policy ARN value to the $policyArn variable which will be used in the next command.
+
+policyArn=$(aws iam list-policies --output text --query 'Policies[?PolicyName == `S3-Delete-Bucket-Policy`].Arn')
+
+//Run the command below to review the policy document for the S3-Delete-Bucket-Policy policy. This policy was created for you to grant delete bucket permissions for your role.
+aws iam get-policy-version --policy-arn $policyArn --version-id v1
+
+//Attach the S3-Delete-Bucket-Policy policy to the notes-application-role role using the correct command
+aws iam attach-role-policy --policy-arn $policyArn --role-name notes-application-role
